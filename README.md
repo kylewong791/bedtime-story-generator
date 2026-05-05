@@ -59,9 +59,11 @@ flowchart TD
     C -->|Score < 8| D[Refine Story with Feedback]
     D --> C
     
-    style A fill:#e1f5ff
-    style E fill:#d4edda
-    style C fill:#fff3cd
+    style A fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#FFFFFF
+    style B fill:#50C878,stroke:#2E7D4E,stroke-width:2px,color:#FFFFFF
+    style C fill:#F5A623,stroke:#C17D11,stroke-width:2px,color:#000000
+    style D fill:#E94B3C,stroke:#A93226,stroke-width:2px,color:#FFFFFF
+    style E fill:#9B59B6,stroke:#6C3483,stroke-width:2px,color:#FFFFFF
 ```
 
 **Flow:**

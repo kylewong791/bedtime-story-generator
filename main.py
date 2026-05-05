@@ -4,6 +4,12 @@ import openai
 """
 Before submitting the assignment, describe here in a few sentences what you would have built next if you spent 2 more hours on this project:
 
+With 2 more hours, I would:
+1. Add story categorization (adventure, friendship, educational themes) with tailored prompts for each category to generate more targeted stories
+2. Implement a user feedback loop where parents/kids can request specific revisions ("make it shorter", "add more animals", "less scary") and the system refines accordingly
+3. Build a simple Flask web interface with options to save/favorite stories, making the tool more accessible for non-technical users
+4. Add analytics to track which evaluation criteria stories commonly fail on, allowing continuous improvement of the storyteller prompt over time
+
 """
 
 def call_model(prompt: str, max_tokens=3000, temperature=0.1) -> str:
@@ -48,14 +54,32 @@ Feedback: [your detailed feedback]"""
     score = 5  # default
     feedback = ""
     
-    for line in lines:
-        if line.startswith("Score:"):
+    # Extract score
+    for i, line in enumerate(lines):
+        if 'score' in line.lower() and ':' in line:
             try:
-                score = int(line.split(":")[1].strip())
+                # Try to extract number from the line
+                score_str = line.split(':')[1].strip()
+                score = int(''.join(filter(str.isdigit, score_str)))
+                # Everything after the score line is feedback
+                feedback = '\n'.join(lines[i+1:]).strip()
+                break
             except:
                 pass
-        elif line.startswith("Feedback:"):
-            feedback = line.split(":", 1)[1].strip()
+    
+    # If no feedback captured yet, try explicit "Feedback:" label
+    if not feedback:
+        for i, line in enumerate(lines):
+            if line.startswith("Feedback:"):
+                feedback = ':'.join(line.split(':')[1:]).strip()
+                # Also grab subsequent lines
+                if i+1 < len(lines):
+                    feedback += '\n' + '\n'.join(lines[i+1:])
+                break
+    
+    # If still no feedback, use everything after first line as feedback
+    if not feedback and len(lines) > 1:
+        feedback = '\n'.join(lines[1:]).strip()
     
     return score, feedback
 
